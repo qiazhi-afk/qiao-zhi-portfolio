@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>谯智 - 视频剪辑师</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #ffffff;
+      color: #1a1a1a;
+      line-height: 1.6;
+    }
+
+    /* 导航栏 */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    nav ul {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      list-style: none;
+      max-width: 900px;
+      margin: 0 auto;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #666;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.3s;
+      padding: 0.5rem 0;
+      border-bottom: 2px solid transparent;
+    }
+
+    nav a:hover, nav a.active {
+      color: #1a1a1a;
+      border-bottom-color: #1a1a1a;
+    }
+
+    /* 通用容器 */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    section {
+      padding: 5rem 0;
+    }
+
+    section:first-of-type {
+      padding-top: 7rem;
+    }
+
+    /* 区块标题 */
+    .section-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: #1a1a1a;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #1a1a1a;
+    }
+
+    /* ====== 个人信息区 ====== */
+    #about {
+      min-height: 80vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .profile-content h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      letter-spacing: -1px;
+    }
+
+    .profile-title {
+      font-size: 1.2rem;
+      color: #666;
+      margin-bottom: 1rem;
+    }
+
+    .profile-meta {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      color: #888;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .profile-meta span {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .profile-desc {
+      font-size: 1rem;
+      color: #555;
+      max-width: 700px;
+      margin: 0 auto 2rem;
+      line-height: 1.8;
+      text-align: left;
+    }
+
+    .profile-contact {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .profile-contact a {
+      color: #1a1a1a;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    .profile-contact a:hover {
+      text-decoration: underline;
+    }
+
+    /* ====== 个人优势 ====== */
+    .advantage-list {
+      background: #fafafa;
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+    }
+
+    .advantage-list li {
+      margin-bottom: 0.75rem;
+      padding-left: 1.5rem;
+      position: relative;
+      color: #555;
+      line-height: 1.7;
+    }
+
+    .advantage-list li:last-child {
+      margin-bottom: 0;
+    }
+
+    .advantage-list li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: #1a1a1a;
+      font-weight: bold;
+    }
+
+    /* ====== 专业技能 ====== */
+    .skills-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .skill-tag {
+      padding: 0.5rem 1rem;
+      background: #1a1a1a;
+      color: #fff;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    /* ====== 工作经历 ====== */
+    .timeline {
+      position: relative;
+      padding-left: 2rem;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.5rem;
+      bottom: 0;
+      width: 2px;
+      background: #e0e0e0;
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-bottom: 2.5rem;
+    }
+
+    .timeline-item:last-child {
+      padding-bottom: 0;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -2.35rem;
+      top: 0.5rem;
+      width: 10px;
+      height: 10px;
+      background: #1a1a1a;
+      border-radius: 50%;
+    }
+
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.5rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .timeline-company {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+
+    .timeline-date {
+      font-size: 0.85rem;
+      color: #888;
+      font-weight: 500;
+    }
+
+    .timeline-position {
+      font-size: 0.95rem;
+      color: #555;
+      margin-bottom: 0.75rem;
+      font-weight: 500;
+    }
+
+    .timeline-content h4 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 0.5rem;
+    }
+
+    .timeline-desc {
+      color: #666;
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+
+    .timeline-desc li {
+      margin-bottom: 0.4rem;
+      padding-left: 1rem;
+      position: relative;
+    }
+
+    .timeline-desc li::before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: #999;
+    }
+
+    .achievement-list {
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px dashed #e0e0e0;
+    }
+
+    .achievement-list h4 {
+      font-size: 0.85rem;
+      color: #1a1a1a;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    /* ====== 实习经历 ====== */
+    .intern-card {
+      background: #fafafa;
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .intern-card:last-child {
+      margin-bottom: 0;
+    }
+
+    .intern-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.5rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .intern-company {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+
+    .intern-position {
+      font-size: 0.95rem;
+      color: #555;
+      font-weight: 500;
+    }
+
+    .intern-date {
+      font-size: 0.85rem;
+      color: #888;
+    }
+
+    /* ====== 项目经历 ====== */
+    .project-card {
+      background: #fafafa;
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .project-card:last-child {
+      margin-bottom: 0;
+    }
+
+    .project-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.5rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .project-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+
+    .project-date {
+      font-size: 0.85rem;
+      color: #888;
+    }
+
+    .project-role {
+      font-size: 0.9rem;
+      color: #555;
+      margin-bottom: 0.75rem;
+      font-weight: 500;
+    }
+
+    /* ====== 教育经历 ====== */
+    .edu-card {
+      background: #fafafa;
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .edu-card:last-child {
+      margin-bottom: 0;
+    }
+
+    .edu-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.5rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .edu-school {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+
+    .edu-date {
+      font-size: 0.85rem;
+      color: #888;
+    }
+
+    .edu-major {
+      font-size: 0.95rem;
+      color: #555;
+    }
+
+    .edu-detail {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px dashed #e0e0e0;
+    }
+
+    .edu-detail p {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 0.5rem;
+    }
+
+    .edu-detail p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* ====== 荣誉证书 ====== */
+    .honor-list {
+      background: #fafafa;
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+    }
+
+    .honor-list li {
+      margin-bottom: 0.5rem;
+      padding-left: 1.5rem;
+      position: relative;
+      color: #555;
+      font-size: 0.95rem;
+    }
+
+    .honor-list li:last-child {
+      margin-bottom: 0;
+    }
+
+    .honor-list li::before {
+      content: '🏆';
+      position: absolute;
+      left: 0;
+    }
+
+    /* ====== 作品集 ====== */
+    .portfolio-tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .tab-btn {
+      padding: 0.75rem 1.5rem;
+      border: 2px solid #e0e0e0;
+      background: transparent;
+      border-radius: 50px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      color: #666;
+    }
+
+    .tab-btn:hover {
+      border-color: #1a1a1a;
+      color: #1a1a1a;
+    }
+
+    .tab-btn.active {
+      background: #1a1a1a;
+      color: #fff;
+      border-color: #1a1a1a;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .video-card {
+      background: #fafafa;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .video-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .video-placeholder {
+      aspect-ratio: 16/9;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .video-placeholder::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .play-btn {
+      width: 60px;
+      height: 60px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .play-btn::after {
+      content: '';
+      width: 0;
+      height: 0;
+      border-left: 20px solid #fff;
+      border-top: 12px solid transparent;
+      border-bottom: 12px solid transparent;
+      margin-left: 5px;
+    }
+
+    .video-wrapper {
+      position: relative;
+      background: #000;
+    }
+
+    .video-wrapper video {
+      width: 100%;
+      display: block;
+      aspect-ratio: 16/9;
+    }
+
+    .video-info {
+      padding: 1rem;
+    }
+
+    .video-info h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .video-info p {
+      font-size: 0.85rem;
+      color: #888;
+    }
+
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .image-card {
+      border-radius: 12px;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      background: #fafafa;
+    }
+
+    .image-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .image-card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .image-info {
+      padding: 1rem;
+    }
+
+    .image-info h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .image-info p {
+      font-size: 0.85rem;
+      color: #888;
+    }
+
+    /* ====== 页脚 ====== */
+    footer {
+      text-align: center;
+      padding: 3rem 2rem;
+      border-top: 1px solid #f0f0f0;
+      color: #888;
+      font-size: 0.9rem;
+    }
+
+    footer a {
+      color: #1a1a1a;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* ====== 响应式 ====== */
+    @media (max-width: 768px) {
+      .profile-content h1 {
+        font-size: 2rem;
+      }
+
+      .profile-title {
+        font-size: 1rem;
+      }
+
+      nav ul {
+        gap: 1rem;
+      }
+
+      nav a {
+        font-size: 0.8rem;
+      }
+
+      .section-title {
+        font-size: 1.3rem;
+      }
+
+      .timeline {
+        padding-left: 1.5rem;
+      }
+
+      .timeline-item::before {
+        left: -1.85rem;
+      }
+
+      .portfolio-tabs {
+        flex-wrap: wrap;
+      }
+
+      .video-grid,
+      .image-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航 -->
+  <nav>
+    <ul>
+      <li><a href="#about" class="active">关于</a></li>
+      <li><a href="#advantage">个人优势</a></li>
+      <li><a href="#skills">专业技能</a></li>
+      <li><a href="#experience">工作经历</a></li>
+      <li><a href="#intern">实习经历</a></li>
+      <li><a href="#projects">项目经历</a></li>
+      <li><a href="#education">教育经历</a></li>
+      <li><a href="#portfolio">作品集</a></li>
+    </ul>
+  </nav>
+
+  <!-- 个人信息 -->
+  <section id="about">
+    <div class="container">
+      <div class="profile-content">
+        <h1>谯智</h1>
+        <p class="profile-title">视频剪辑师</p>
+        <div class="profile-meta">
+          <span>👤 男 | 22岁</span>
+          <span>📍 期望城市：杭州</span>
+          <span>💰 期望薪资：8-13K</span>
+        </div>
+        <div class="profile-contact">
+          <a href="tel:18623400894">📞 18623400894</a>
+          <a href="mailto:179372104@qq.com">✉️ 179372104@qq.com</a>
+        </div>
+        <p class="profile-desc">
+          有互联网运营经验，精通用内容策划及数据分析。独立编辑文案剪辑短视频，单条视频全网五百万播放，两个月内实现账号万粉。熟练掌握各种主流软件、社群运营流程，擅长跨部门协作推动项目落地。抗压能力强，热衷学习行业新技术。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 个人优势 -->
+  <section id="advantage">
+    <div class="container">
+      <h2 class="section-title">个人优势</h2>
+      <ul class="advantage-list">
+        <li>有互联网运营经验，精通用内容策划及数据分析</li>
+        <li>独立编辑文案剪辑短视频，单条视频全网五百万播放，两个月内实现账号万粉</li>
+        <li>熟练掌握各种主流软件、社群运营流程，擅长跨部门协作推动项目落地</li>
+        <li>抗压能力强，热衷学习行业新技术</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 专业技能 -->
+  <section id="skills">
+    <div class="container">
+      <h2 class="section-title">专业技能</h2>
+      <div class="skills-grid">
+        <span class="skill-tag">视频剪辑</span>
+        <span class="skill-tag">AE</span>
+        <span class="skill-tag">PS</span>
+        <span class="skill-tag">su建模</span>
+        <span class="skill-tag">摄影</span>
+        <span class="skill-tag">文案策划</span>
+        <span class="skill-tag">账号运营</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 工作经历 -->
+  <section id="experience">
+    <div class="container">
+      <h2 class="section-title">工作经历</h2>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-header">
+            <span class="timeline-company">杭州菌群文化科技有限公司</span>
+            <span class="timeline-date">2025.07 — 2026.03</span>
+          </div>
+          <p class="timeline-position">视频剪辑</p>
+          <div class="timeline-content">
+            <h4>内容：</h4>
+            <ul class="timeline-desc">
+              <li>负责视频剪辑及账号日常运营，提升内容质量与用户互动率</li>
+              <li>对接甲方需求，高效跟进任务进度，确保项目按时交付</li>
+              <li>根据甲方相关要求，剪辑制作相关短视频和宣传片，负责线上宣传和舆论控制</li>
+            </ul>
+            <div class="achievement-list">
+              <h4>业绩：</h4>
+              <ul class="timeline-desc">
+                <li>独立孵化运营两个账号，账号1两个月两千粉，账号2两个月万粉</li>
+                <li>单条视频播放破五百万，评论超两千</li>
+                <li>给上海某知名游戏公司进行互联网舆论宣传，两个月内发布40+游戏内容视频，获得百万播放，打造6个4000粉左右游戏攻略账号。营造了良好游戏社区氛围，在游戏上线前吸引了更多的游戏玩家</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 实习经历 -->
+  <section id="intern">
+    <div class="container">
+      <h2 class="section-title">实习经历</h2>
+      <div class="intern-card">
+        <div class="intern-header">
+          <span class="intern-company">重庆青逸景观设计有限公司</span>
+          <span class="intern-date">2024.11 — 2025.04</span>
+        </div>
+        <p class="intern-position">景观设计师助理</p>
+        <div class="timeline-content">
+          <h4>内容：</h4>
+          <ul class="timeline-desc">
+            <li>设计师助理设计执行支持：协助主设计师完成设计方案的前期调研与资料收集，使用PS、AI、Su等设计软件完成基础设计任务</li>
+            <li>项目协作管理：跟进项目进度，及时向设计师反馈执行情况，管理设计素材库，做好文件版本控制与归档管理设计物料（样稿打印材料采购跟进），协助处理设计版权登记等行政事务数据工作</li>
+          </ul>
+          <div class="achievement-list">
+            <h4>实习成果：</h4>
+            <ul class="timeline-desc">
+              <li>跟进完成重庆大学城龙湖u城九、十栋园林绿化改造</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 项目经历 -->
+  <section id="projects">
+    <div class="container">
+      <h2 class="section-title">项目经历</h2>
+      
+      <div class="project-card">
+        <div class="project-header">
+          <span class="project-name">互联网宣传</span>
+          <span class="project-date">2025.08 — 2026.03</span>
+        </div>
+        <p class="project-role">剪辑师</p>
+        <div class="timeline-content">
+          <h4>内容：</h4>
+          <ul class="timeline-desc">
+            <li>根据甲方相关要求，剪辑制作相关短视频和宣传片，负责线上宣传和舆论控制</li>
+          </ul>
+          <div class="achievement-list">
+            <h4>业绩：</h4>
+            <ul class="timeline-desc">
+              <li>给上海某知名游戏公司进行互联网舆论宣传，两个月内发布40+游戏内容视频，获得百万播放，打造6个4000粉左右游戏攻略账号。营造了良好游戏社区氛围，在游戏上线前吸引了更多的游戏玩家</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-header">
+          <span class="project-name">龙湖u城市九、十栋园林景观改造</span>
+          <span class="project-date">2024.11 — 2025.04</span>
+        </div>
+        <p class="project-role">设计师助理</p>
+        <ul class="timeline-desc">
+          <li>协助主设计师完成设计方案的前期调研与资料收集</li>
+          <li>协同施工队进行测量</li>
+          <li>完成施工一期9栋底楼行道规划和植物配置选择</li>
+        </ul>
+      </div>
+
+      <div class="project-card">
+        <div class="project-header">
+          <span class="project-name">巴渝乡村环境设计工作室教学助理</span>
+          <span class="project-date">2022.11 — 2025.03</span>
+        </div>
+        <p class="project-role">工作室助理</p>
+        <ul class="timeline-desc">
+          <li>协助工作室教授完成工作室日常安排</li>
+          <li>重庆文理学院AB区地下通道重建设计工作，并发布视频获得校内外1000+点赞</li>
+          <li>西南医科大学导视系统设计工作，在标的过程中被广泛认可</li>
+          <li>代表学校联合源道建筑有限公司参加"三师进社区"重庆市首次城市体检</li>
+          <li>供销社·海航保利国际中心环境提升景观概念提案ppt制作工作</li>
+          <li>四川省广安市大龙镇战斗村等村庄环境改造建模，效果图制作工作</li>
+          <li>重庆市荣昌区岚峰林场植物研学基地项目场地勘察工作以及后期建模工作</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 教育经历 -->
+  <section id="education">
+    <div class="container">
+      <h2 class="section-title">教育经历</h2>
+      
+      <div class="edu-card">
+        <div class="edu-header">
+          <span class="edu-school">重庆文理学院</span>
+          <span class="edu-date">2021 — 2025</span>
+        </div>
+        <p class="edu-major">本科 | 环境艺术设计</p>
+        <div class="edu-detail">
+          <p><strong>2022.11 — 2025.07</strong> 巴渝乡村环境设计工作室 工作室部员</p>
+          <p>协助工作室教授完成工作室日常安排</p>
+          <p>重庆文理学院AB区地下通道重建设计工作，并发布视频获得校内外1000+点赞</p>
+          <p>西南医科大学导视系统设计工作，在标的过程中被广泛认可</p>
+          <p>代表学校联合源道建筑有限公司参加"三师进社区"重庆市首次城市体检</p>
+          <p>供销社·海航保利国际中心环境提升景观概念提案ppt制作工作</p>
+          <p>四川省广安市大龙镇战斗村等村庄环境改造建模，效果图制作工作</p>
+          <p>重庆市荣昌区岚峰林场植物研学基地项目场地勘察工作以及后期建模工作</p>
+          <p>学生会担任创业实践部干事</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 荣誉证书 -->
+  <section id="honors">
+    <div class="container">
+      <h2 class="section-title">荣誉证书</h2>
+      <ul class="honor-list">
+        <li>2022.10 / 2023.10 获校级奖学金</li>
+        <li>2023.05 米兰设计周重庆赛区三等奖</li>
+        <li>2023.08 重庆文理学院美术与设计学院书画摄影设计大赛三等奖</li>
+        <li>2023.08 第十七届中国好创意暨全国数字艺术设计大赛国赛一等奖</li>
+        <li>2024.01 重庆市第七届大学生艺术展（本科乙组）二等奖</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 作品集 -->
+  <section id="portfolio">
+    <div class="container">
+      <h2 class="section-title">作品集</h2>
+      
+      <div class="portfolio-tabs">
+        <button class="tab-btn active" data-tab="video">📹 视频作品</button>
+        <button class="tab-btn" data-tab="image">🖼️ 图片作品</button>
+      </div>
+
+      <!-- 视频作品 -->
+      <!-- 视频作品 -->
+      <div class="tab-content active" id="video">
+        <div class="video-grid">
+          <div class="video-card">
+            <div class="video-wrapper">
+              <video controls poster="">
+                <source src="video-1.mp4" type="video/mp4">
+                您的浏览器不支持视频播放
+              </video>
+            </div>
+            <div class="video-info">
+              <h4>游戏攻略</h4>
+              <p>游戏内容 / 2025</p>
+            </div>
+          </div>
+          <div class="video-card">
+            <div class="video-wrapper">
+              <video controls preload="metadata">
+                <source src="video-2.mp4" type="video/mp4">
+                您的浏览器不支持视频播放
+              </video>
+            </div>
+            <div class="video-info">
+              <h4>外包商单作品</h4>
+              <p>商业项目 / 2025</p>
+            </div>
+          </div>
+          <div class="video-card">
+            <div class="video-wrapper">
+              <video controls preload="metadata">
+                <source src="video-3.mp4" type="video/mp4">
+                您的浏览器不支持视频播放
+              </video>
+            </div>
+            <div class="video-info">
+              <h4>航拍宣传片</h4>
+              <p>商业航拍 / 2025</p>
+            </div>
+          </div>
+          <div class="video-card">
+            <div class="video-wrapper">
+              <video controls preload="metadata">
+                <source src="video-4.mp4" type="video/mp4">
+                您的浏览器不支持视频播放
+              </video>
+            </div>
+            <div class="video-info">
+              <h4>从夯到拉，评价二游命座机制</h4>
+              <p>铺量视频 / 2025</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 图片作品 -->
+      <div class="tab-content" id="image">
+        <div class="image-grid">
+          <div class="image-card">
+            <img src="谯智-视频剪辑-1.png" alt="视频剪辑作品 1">
+            <div class="image-info">
+              <h4>视频剪辑作品 1</h4>
+              <p>Premiere Pro / After Effects</p>
+            </div>
+          </div>
+          <div class="image-card">
+            <img src="谯智-视频剪辑-2.png" alt="视频剪辑作品 2">
+            <div class="image-info">
+              <h4>视频剪辑作品 2</h4>
+              <p>Premiere Pro / After Effects</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 页脚 -->
+  <footer>
+    <p>© 2026 谯智 · 视频剪辑师 · <a href="mailto:179372104@qq.com">179372104@qq.com</a></p>
+  </footer>
+
+  <!-- 脚本 -->
+  <script>
+    // 标签切换
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const tabId = btn.dataset.tab;
+        tabContents.forEach(content => {
+          content.classList.remove('active');
+          if (content.id === tabId) {
+            content.classList.add('active');
+          }
+        });
+      });
+    });
+
+    // 平滑滚动
+    document.querySelectorAll('nav a').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = document.querySelector(link.getAttribute('href'));
+        target.scrollIntoView({ behavior: 'smooth' });
+
+        document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+        link.classList.add('active');
+      });
+    });
+
+    // 滚动时更新导航
+    window.addEventListener('scroll', () => {
+      const sections = document.querySelectorAll('section');
+      let current = '';
+
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        if (scrollY >= sectionTop - 200) {
+          current = section.getAttribute('id');
+        }
+      });
+
+      document.querySelectorAll('nav a').forEach(a => {
+        a.classList.remove('active');
+        if (a.getAttribute('href') === '#' + current) {
+          a.classList.add('active');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
